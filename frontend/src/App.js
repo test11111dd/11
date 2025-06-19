@@ -1310,6 +1310,14 @@ Or feel free to ask about lowering your premium! 💰`;
                       >
                         🚀 Get Insured Now - €{quote.premium.toFixed(2)}/month
                       </button>
+
+                      {/* Lower Your Premium Button */}
+                      <button 
+                        onClick={startChatbot}
+                        className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 px-6 rounded-lg font-semibold text-base transition-all transform hover:scale-105 shadow-lg mt-3"
+                      >
+                        💬 Lower Your Premium with AI
+                      </button>
                       
                       <div className="mt-3 text-xs text-blue-300">
                         ✅ Instant activation • ✅ AI-powered protection • ✅ No paperwork
