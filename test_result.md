@@ -203,6 +203,9 @@ backend:
         - working: true
           agent: "testing"
           comment: "Verified all backend API endpoints are working correctly. Tested root endpoint, status check endpoints, MongoDB integration, CORS configuration, and error handling. All tests passed successfully."
+        - working: true
+          agent: "testing"
+          comment: "Re-tested all backend API endpoints using comprehensive backend_test.py. All tests passed successfully. The root endpoint returns 'Hello World', status check endpoints (POST and GET) work correctly, MongoDB integration is functioning properly with data persistence verified, CORS is configured correctly, and error handling for invalid endpoints works as expected."
 
   - task: "Verify backend API endpoints"
     implemented: true
@@ -218,6 +221,9 @@ backend:
         - working: true
           agent: "testing"
           comment: "Re-tested all backend API endpoints. All tests are passing successfully. The root endpoint returns 'Hello World', status check endpoints (POST and GET) work correctly, MongoDB integration is functioning properly with data persistence, CORS is configured correctly, and error handling for invalid endpoints works as expected."
+        - working: true
+          agent: "testing"
+          comment: "Created and executed updated backend_test.py to test all required endpoints. All tests passed successfully. Verified the backend is accessible from the frontend URL configuration, MongoDB connectivity and data persistence are working correctly, and all API endpoints return proper responses."
 
 frontend:
   - task: "Enhanced AI Premium Calculator"
