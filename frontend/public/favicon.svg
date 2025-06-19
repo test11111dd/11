@@ -1,0 +1,15 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background with rounded corners -->
+  <rect width="32" height="32" rx="6" ry="6" fill="url(#bg-gradient)"/>
+  
+  <!-- Shield icon - bigger with less padding -->
+  <path d="M16 3L7 6.4V14.4C7 20.8 10.6 26.4 16 28C21.4 26.4 25 20.8 25 14.4V6.4L16 3M16 9.6C17.067 9.6 18.133 10.667 18.133 11.6V13.6C18.667 13.6 19.2 14.133 19.2 14.667V18.4C19.2 18.933 18.667 19.467 18.133 19.467H13.867C13.333 19.467 12.8 18.933 12.8 18.4V14.667C12.8 14.133 13.333 13.6 13.867 13.6V11.6C13.867 10.667 14.933 9.6 16 9.6M16 11.2C15.6 11.2 15.333 11.467 15.333 11.6V13.6H16.667V11.6C16.667 11.467 16.4 11.2 16 11.2Z" 
+        fill="white"/>
+</svg>
