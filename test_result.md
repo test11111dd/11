@@ -288,9 +288,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Blog System Implementation"
-    - "Navigation Testing"
-    - "About Section Testing"
+    - "AI Chatbot Risk Assessment Feature"
+    - "Test premium optimization calculations"
+    - "Verify mobile responsiveness of chatbot widget"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
