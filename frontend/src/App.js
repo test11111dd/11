@@ -2178,6 +2178,135 @@ const AboutUs = () => {
           </div>
         </div>
       </section>
+
+      {/* AI Chatbot Widget */}
+      {showChatbot && (
+        <div className="fixed bottom-4 right-4 w-96 max-w-[90vw] h-96 bg-slate-900 border-2 border-blue-500 rounded-xl shadow-2xl z-50 flex flex-col overflow-hidden">
+          {/* Chatbot Header */}
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-4 flex justify-between items-center">
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+                🤖
+              </div>
+              <div>
+                <h3 className="text-white font-semibold">AI Risk Advisor</h3>
+                <p className="text-blue-100 text-xs">Lower your premium now</p>
+              </div>
+            </div>
+            <button 
+              onClick={() => setShowChatbot(false)}
+              className="text-white hover:text-gray-300 text-xl font-bold"
+            >
+              ×
+            </button>
+          </div>
+
+          {/* Chat Messages */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-3">
+            {chatMessages.map((msg, index) => (
+              <div key={index} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}>
+                <div className={`max-w-[80%] p-3 rounded-lg ${
+                  msg.type === 'user' 
+                    ? 'bg-blue-600 text-white' 
+                    : 'bg-gray-700 text-gray-100'
+                }`}>
+                  <div className="whitespace-pre-wrap text-sm">{msg.message}</div>
+                  
+                  {/* Question Response Buttons */}
+                  {msg.type === 'bot' && msg.questionType === 'boolean' && (
+                    <div className="flex space-x-2 mt-3">
+                      <button 
+                        onClick={() => handleChatbotAnswer(msg.questionId, true)}
+                        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm font-semibold"
+                      >
+                        Yes ✅
+                      </button>
+                      <button 
+                        onClick={() => handleChatbotAnswer(msg.questionId, false)}
+                        className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm font-semibold"
+                      >
+                        No ❌
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Slider for stablecoin percentage */}
+                  {msg.type === 'bot' && msg.questionType === 'slider' && (
+                    <div className="mt-3">
+                      <input 
+                        type="range"
+                        min="0"
+                        max="100"
+                        defaultValue="50"
+                        className="w-full"
+                        onChange={(e) => {
+                          const value = parseInt(e.target.value);
+                          e.target.nextElementSibling.textContent = `${value}% stablecoins`;
+                        }}
+                        onMouseUp={(e) => handleChatbotAnswer(msg.questionId, parseInt(e.target.value))}
+                      />
+                      <div className="text-center text-xs mt-1 text-gray-300">50% stablecoins</div>
+                      <div className="text-center mt-2">
+                        <button 
+                          onClick={() => {
+                            const slider = document.querySelector('input[type="range"]');
+                            handleChatbotAnswer(msg.questionId, parseInt(slider.value));
+                          }}
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded text-sm"
+                        >
+                          Submit
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Accept Optimized Rate Button */}
+                  {msg.type === 'bot' && msg.showAcceptButton && (
+                    <div className="mt-3">
+                      <button 
+                        onClick={acceptOptimizedRate}
+                        className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white py-2 px-4 rounded font-semibold text-sm"
+                      >
+                        🎉 Accept Better Rate
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+            
+            {isTyping && (
+              <div className="flex justify-start">
+                <div className="bg-gray-700 text-gray-100 p-3 rounded-lg">
+                  <div className="flex space-x-1">
+                    <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                    <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Chat Input for FAQs */}
+          <div className="p-3 border-t border-gray-700">
+            <div className="flex space-x-2">
+              <button 
+                onClick={() => handleFAQ("What's covered?")}
+                className="flex-1 bg-gray-700 hover:bg-gray-600 text-white text-xs py-2 px-2 rounded"
+              >
+                What's covered?
+              </button>
+              <button 
+                onClick={() => handleFAQ("How do I file a claim?")}
+                className="flex-1 bg-gray-700 hover:bg-gray-600 text-white text-xs py-2 px-2 rounded"
+              >
+                How to claim?
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
