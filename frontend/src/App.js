@@ -712,6 +712,261 @@ const MainContent = () => {
     emailjs.init('EOqkhvyILTgDLTbMN');
   }, []);
 
+  // AI Chatbot functions
+  const startChatbot = () => {
+    setShowChatbot(true);
+    setCurrentStep(0);
+    setChatMessages([
+      {
+        type: 'bot',
+        message: `Hi! I'm your AI risk advisor. I can help lower your premium of €${quote.premium.toFixed(2)} by analyzing your security setup. Let's start with a few quick questions! 🤖`,
+        timestamp: new Date()
+      }
+    ]);
+    
+    // Delay first question slightly for better UX
+    setTimeout(() => {
+      askNextQuestion();
+    }, 1500);
+  };
+
+  const chatQuestions = [
+    {
+      id: 'hardware_wallet',
+      question: 'Do you use a hardware wallet (like Ledger or Trezor) for most of your crypto storage?',
+      type: 'boolean',
+      discount: 0.6 // 40% discount if yes
+    },
+    {
+      id: 'revoked_permissions', 
+      question: 'Have you revoked unused DeFi permissions and token approvals in the last month?',
+      type: 'boolean',
+      discount: 0.85 // 15% discount if yes
+    },
+    {
+      id: 'stablecoin_percentage',
+      question: 'What percentage of your crypto holdings are in stablecoins (USDC, USDT, DAI) vs volatile assets?',
+      type: 'slider',
+      min: 0,
+      max: 100,
+      discount: (value) => value > 60 ? 0.9 : value > 30 ? 0.95 : 1.0 // Better rates for more stable portfolios
+    }
+  ];
+
+  const askNextQuestion = () => {
+    if (currentStep < chatQuestions.length) {
+      const question = chatQuestions[currentStep];
+      setIsTyping(true);
+      
+      setTimeout(() => {
+        setChatMessages(prev => [...prev, {
+          type: 'bot',
+          message: question.question,
+          questionType: question.type,
+          questionId: question.id,
+          timestamp: new Date()
+        }]);
+        setIsTyping(false);
+      }, 1000);
+    } else {
+      // All questions answered, calculate new premium
+      calculateOptimizedPremium();
+    }
+  };
+
+  const handleChatbotAnswer = (questionId, answer) => {
+    // Add user response to chat
+    const responseText = typeof answer === 'boolean' 
+      ? (answer ? 'Yes' : 'No')
+      : `${answer}% stablecoins`;
+      
+    setChatMessages(prev => [...prev, {
+      type: 'user', 
+      message: responseText,
+      timestamp: new Date()
+    }]);
+
+    // Update chatbot data
+    setChatbotData(prev => ({
+      ...prev,
+      [questionId === 'hardware_wallet' ? 'hasHardwareWallet' : 
+       questionId === 'revoked_permissions' ? 'revokedPermissions' :
+       'stablecoinPercentage']: answer
+    }));
+
+    // Move to next question
+    setCurrentStep(prev => prev + 1);
+    
+    setTimeout(() => {
+      askNextQuestion();
+    }, 500);
+  };
+
+  const calculateOptimizedPremium = () => {
+    if (!quote) return;
+
+    let discountMultiplier = 1.0;
+    let savings = [];
+
+    // Hardware wallet discount
+    if (chatbotData.hasHardwareWallet) {
+      discountMultiplier *= 0.6; // 40% discount
+      savings.push('40% off for hardware wallet usage');
+    }
+
+    // DeFi permissions discount  
+    if (chatbotData.revokedPermissions) {
+      discountMultiplier *= 0.85; // 15% discount
+      savings.push('15% off for good DeFi hygiene');
+    }
+
+    // Stablecoin portfolio discount
+    const stablecoinDiscount = chatbotData.stablecoinPercentage > 60 ? 0.9 : 
+                              chatbotData.stablecoinPercentage > 30 ? 0.95 : 1.0;
+    discountMultiplier *= stablecoinDiscount;
+    
+    if (stablecoinDiscount < 1.0) {
+      const discountPercent = Math.round((1 - stablecoinDiscount) * 100);
+      savings.push(`${discountPercent}% off for stable portfolio composition`);
+    }
+
+    const newPremium = quote.premium * discountMultiplier;
+    const totalSavings = quote.premium - newPremium;
+
+    setOptimizedQuote({
+      ...quote,
+      premium: newPremium,
+      savings: totalSavings,
+      discountReasons: savings,
+      originalPremium: quote.premium
+    });
+
+    // Show results
+    setIsTyping(true);
+    setTimeout(() => {
+      setChatMessages(prev => [...prev, {
+        type: 'bot',
+        message: `🎉 Great news! Based on your security practices, I've optimized your premium!
+
+**Your new rate:** €${newPremium.toFixed(2)}/month
+**You save:** €${totalSavings.toFixed(2)}/month (${Math.round((totalSavings/quote.premium)*100)}% off!)
+
+**Savings breakdown:**
+${savings.map(s => `• ${s}`).join('\n')}
+
+Would you like to accept this better rate?`,
+        timestamp: new Date(),
+        showAcceptButton: true
+      }]);
+      setIsTyping(false);
+    }, 1500);
+
+    // Save to Google Sheets (simulated for now)
+    saveToGoogleSheets();
+  };
+
+  const saveToGoogleSheets = async () => {
+    // In a real implementation, you'd use Google Sheets API
+    // For now, we'll simulate this with a console log
+    const data = {
+      timestamp: new Date().toISOString(),
+      walletValue: calculatorData.walletValue,
+      walletType: calculatorData.walletType,
+      coverageType: calculatorData.coverageType,
+      securityMeasures: calculatorData.securityMeasures,
+      duration: calculatorData.duration,
+      originalPremium: quote.premium,
+      hasHardwareWallet: chatbotData.hasHardwareWallet,
+      revokedPermissions: chatbotData.revokedPermissions,
+      stablecoinPercentage: chatbotData.stablecoinPercentage,
+      optimizedPremium: optimizedQuote?.premium || 0,
+      savings: optimizedQuote?.savings || 0
+    };
+    
+    console.log('Saving chatbot data to Google Sheets:', data);
+    
+    // Here you would implement actual Google Sheets API integration
+    // Example: await sheets.spreadsheets.values.append({...});
+  };
+
+  const handleFAQ = (question) => {
+    let response = '';
+    
+    switch(question.toLowerCase()) {
+      case "what's covered?":
+      case "what is covered":
+        response = `Our crypto insurance covers:
+
+🛡️ **Hacking & Theft**: Exchange hacks, wallet breaches, SIM swapping
+🎣 **Phishing & Scams**: Fake websites, social engineering attacks  
+🔗 **Smart Contract Failures**: DeFi protocol exploits, rug pulls
+💼 **Custody Risks**: Lost private keys, hardware wallet failures
+
+📋 [View full policy details](https://bitsafe.ltd/policy)`;
+        break;
+        
+      case "how do i file a claim":
+      case "how to file a claim":
+        response = `Filing a claim is super easy! Here's how:
+
+**Step 1:** 📱 Submit your claim via our portal with transaction details
+**Step 2:** 🤖 Our AI instantly verifies the incident using blockchain data  
+**Step 3:** 💰 Get paid automatically via smart contract (usually within hours!)
+
+No paperwork, no phone calls, no hassle. It's all automated! 🚀`;
+        break;
+        
+      case "how fast are payouts":
+      case "payout time":
+        response = `⚡ **Lightning fast payouts!**
+
+• **Simple claims**: 2-15 minutes (fully automated)
+• **Complex cases**: 2-24 hours (AI + human review)
+• **Average payout time**: 18 minutes
+
+Our smart contracts pay you instantly once the claim is verified! 🤖💨`;
+        break;
+        
+      default:
+        response = `I can help you with:
+
+• "What's covered?" - See our full coverage details
+• "How do I file a claim?" - Learn our 3-step claim process  
+• "How fast are payouts?" - Payout timing info
+
+Or feel free to ask about lowering your premium! 💰`;
+    }
+    
+    setChatMessages(prev => [...prev, 
+      {
+        type: 'user',
+        message: question,
+        timestamp: new Date()
+      },
+      {
+        type: 'bot', 
+        message: response,
+        timestamp: new Date()
+      }
+    ]);
+  };
+
+  const acceptOptimizedRate = () => {
+    // Update the main quote with optimized rate
+    setQuote(optimizedQuote);
+    
+    setChatMessages(prev => [...prev, {
+      type: 'bot',
+      message: `🎉 Awesome! Your new premium of €${optimizedQuote.premium.toFixed(2)}/month has been applied. Click "Get Insured Now" above to proceed with this better rate!`,
+      timestamp: new Date()
+    }]);
+    
+    // Close chatbot after a delay
+    setTimeout(() => {
+      setShowChatbot(false);
+    }, 2000);
+  };
+
   // Updated premium calculation logic
   const calculatePremium = () => {
     if (!calculatorData.walletValue || !calculatorData.walletType || !calculatorData.coverageType || !calculatorData.securityMeasures || !calculatorData.duration) {
