@@ -1284,43 +1284,55 @@ Or feel free to ask about lowering your premium! 💰`;
                 </button>
 
                 {quote && (
-                  <div className="bg-blue-900/30 p-4 rounded-lg border border-blue-600 fade-in">
-                    <div className="text-center">
-                      <div className={`inline-block px-3 py-1 rounded-full text-sm font-semibold mb-2 ${
+                  <div className="bg-blue-900/30 p-6 rounded-lg border border-blue-600 fade-in">
+                    {/* Top section - Risk badge and premium */}
+                    <div className="flex items-center justify-between mb-4">
+                      <div className={`px-4 py-2 rounded-full text-sm font-semibold ${
                         quote.riskLevel === 'Low' ? 'bg-green-600 text-white risk-low' :
                         quote.riskLevel === 'Medium' ? 'bg-yellow-600 text-white risk-medium' : 'bg-red-600 text-white risk-high'
                       }`}>
                         {quote.riskLevel} Risk
                       </div>
-                      <p className="text-white font-bold text-lg">
-                        AI Premium: €{quote.premium.toFixed(2)}
+                      <div className="text-right">
+                        <p className="text-white font-bold text-2xl">€{quote.premium.toFixed(2)}</p>
+                        <p className="text-blue-200 text-sm">per month</p>
+                      </div>
+                    </div>
+
+                    {/* Coverage details */}
+                    <div className="text-center mb-4">
+                      <p className="text-blue-200 text-sm">
+                        {quote.duration.replace('month', ' month').replace('year', ' year')} coverage • €{quote.coverageAmount.toLocaleString()} insured
                       </p>
-                      <p className="text-blue-200 text-sm mb-4">
-                        for {quote.duration.replace('month', ' month').replace('year', ' year')} 
-                        covering €{quote.coverageAmount.toLocaleString()}
-                      </p>
-                      
+                    </div>
+                    
+                    {/* Action buttons - horizontal layout */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {/* Get Insured Now Button */}
                       <button 
                         onClick={() => {
-                          // After seeing the quote, scroll to contact section to apply
                           document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
                         }}
-                        className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white py-4 px-6 rounded-lg font-bold text-lg transition-all transform hover:scale-105 shadow-lg pulse-green mt-2"
+                        className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white py-3 px-4 rounded-lg font-bold text-base transition-all transform hover:scale-105 shadow-lg pulse-green"
                       >
-                        🚀 Get Insured Now - €{quote.premium.toFixed(2)}/month
+                        🚀 Get Insured Now
                       </button>
 
                       {/* Lower Your Premium Button */}
                       <button 
                         onClick={startChatbot}
-                        className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 px-6 rounded-lg font-semibold text-base transition-all transform hover:scale-105 shadow-lg mt-3"
+                        className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 px-4 rounded-lg font-semibold text-base transition-all transform hover:scale-105 shadow-lg"
                       >
-                        💬 Lower Your Premium with AI
+                        💬 Lower Premium
                       </button>
-                      
-                      <div className="mt-3 text-xs text-blue-300">
-                        ✅ Instant activation • ✅ AI-powered protection • ✅ No paperwork
+                    </div>
+                    
+                    {/* Features */}
+                    <div className="mt-4 text-center">
+                      <div className="text-xs text-blue-300 flex items-center justify-center space-x-4">
+                        <span>✅ Instant activation</span>
+                        <span>✅ AI-powered protection</span>
+                        <span>✅ No paperwork</span>
                       </div>
                     </div>
                   </div>
