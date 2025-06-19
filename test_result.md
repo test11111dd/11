@@ -238,6 +238,18 @@ frontend:
           agent: "main"
           comment: "Enhanced premium calculator with prominent 'Get Insured Now' button after quote display. Added pulse animation, euro pricing, smooth scroll to contact form, and improved contact section with insurance-focused messaging and process flow."
 
+  - task: "AI Chatbot Risk Assessment Feature"
+    implemented: true
+    working: true
+    file: "frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "Successfully implemented AI chatbot feature for premium optimization. Added 'Lower Your Premium' button that opens floating chat widget. Chatbot asks 3 key risk assessment questions: hardware wallet usage (40% discount), DeFi permissions revoked (15% discount), and stablecoin percentage (up to 10% discount). Includes FAQ responses for 'What's covered?' and 'How to file a claim?'. Mobile-friendly responsive design with typing indicators and interactive elements. Simulated Google Sheets data logging for underwriting team."
+
   - task: "Configure EmailJS contact form with proper credentials"
     implemented: true
     working: true
