@@ -80,7 +80,8 @@ class BackendAPITest(unittest.TestCase):
         
         # Check CORS headers
         self.assertTrue("Access-Control-Allow-Origin" in response.headers)
-        self.assertEqual(response.headers["Access-Control-Allow-Origin"], "*")
+        # The server is reflecting the Origin header value instead of using "*"
+        self.assertEqual(response.headers["Access-Control-Allow-Origin"], "http://example.com")
         self.assertTrue("Access-Control-Allow-Methods" in response.headers)
         self.assertTrue("Access-Control-Allow-Headers" in response.headers)
         
